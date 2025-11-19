@@ -79,51 +79,61 @@ float* filterAboveAverage(float* p, int n, int& newCount){
 
 int main(){
     while (true) {
+        SetConsoleOutputCP(CP_UTF8);
+        SetConsoleCP(CP_UTF8);
 
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
+        int n;
 
-    int n;
-    float* data=new float[n];
+        cout<<"\n\n=== Анализ сенсора ===\n";
 
-    cout<<"\n\n=== Анализ сенсора ===\n";
+        cout << "Введите количество измерений: ";
+        cin >> n;
 
-    cout << "Введите количество измерений: ";
-    cin >> n;
+        if (n<0) {
+            cout<<"Выход из пограммы\n";
+            break;
+        }
 
-    inputData(data, n);
+        if (n==0){
+            cout<<"Значений нет\n";
+            continue;
+        }
 
-    //проверка фун-ии, вывод
-    cout<< "Вы ввели: ";
+        float* data=new float[n];
 
-    for (int i=0; i<n; i++){
-        cout<< *(data+i)<<" ";
-    }
+        inputData(data, n);
 
-    //находим среднее значение
-    float avrg=average(data, n);
-    cout<<"\n\nСреднее значение: "<<avrg;
+        //проверка фун-ии, вывод
+        cout<< "Вы ввели: ";
 
-    //находим минимальное значение
-    float min=minValue(data,n); 
-    cout<<"\nМинимальное значение: "<<min;
+        for (int i=0; i<n; i++){
+            cout<< *(data+i)<<" ";
+        }   
 
-    //находим максимальное значение
-    float max=maxValue(data,n); 
-    cout<<"\nМаксимальное значение: "<<max;
+        //находим среднее значение
+        float avrg=average(data, n);
+        cout<<"\n\nСреднее значение: "<<avrg;
 
-    //выводим значения выше среднего
-    int newCount=0;
-    float* filtered=filterAboveAverage(data, n, newCount);
-    cout<<"\n\nЗначения выше среднего: \n";
-    for (int j=0; j<newCount; j++){
-        cout<<*(filtered+j)<<" ";
-    }
+        //находим минимальное значение
+        float min=minValue(data,n); 
+        cout<<"\nМинимальное значение: "<<min;
+
+        //находим максимальное значение
+        float max=maxValue(data,n); 
+        cout<<"\nМаксимальное значение: "<<max;
+
+        //выводим значения выше среднего
+        int newCount=0;
+        float* filtered=filterAboveAverage(data, n, newCount);
+        cout<<"\n\nЗначения выше среднего: \n";
+        for (int j=0; j<newCount; j++){
+            cout<<*(filtered+j)<<" ";
+        }
 
 
-    //обнуление массива и указателя на него
-    delete [] data;
-    data=nullptr;
+        //обнуление массива и указателя на него
+        delete [] data;
+        data=nullptr;
 
     }
 

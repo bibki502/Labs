@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <functional> //для function
 using namespace std;
 
 //Шаблонная структура GroupInfo
@@ -29,12 +30,14 @@ int FindGroup(vector<GroupInfo<KeyType, ElemType, ValueType>>& groups, KeyType k
 }
 
 //Шаблонная функция groupStatus
-template <typename T, typename KeyFunc, typename ValueFunc>
-auto groupStatus(T arr[], int n, KeyFunc keyFunc, ValueFunc valueFunc)
+template <typename T, typename KeyType, typename ValueType>
+auto groupStatus(T arr[], int n, 
+                function<KeyType(T)> keyFunc, //теперь явно указываю, что keyFunc это функция принимающая T и возвращающая KeyType
+                function<ValueType(T)> valueFunc) //valueFunc принимает Т ии возвращает ValueType
 {
-    //Определение типа через decltupe
+    /*Определение типа через decltupe
     using KeyType=decltype(keyFunc(arr[0]));
-    using ValueType=decltype(valueFunc(arr[0]));
+    using ValueType=decltype(valueFunc(arr[0]));*/
 
     //Создание пустого вектора с группами
     vector<GroupInfo<KeyType, T, ValueType>> groups;
@@ -113,6 +116,35 @@ void printGroups(const vector<GroupInfo<KeyType, ElemType, ValueType>>& groups) 
     }
 }
 
+//Лямбда для ключа (последняя цифра) ПЕРЕПИСАННАЯ
+int intKeyFunc (int x) {return x%10;}
+
+//Лямбда для значения (само число) ПЕРЕПИСАННАЯ
+int intValueFunc (int x) {return x;}
+
+////Лямбда для ключа (интервал) ПЕРЕПИСАННАЯ
+int doubleKeyFunc (double x) {
+    if (x < 0) return 0; 
+    else if (x <= 10) return 1; 
+    else return 2;
+}
+
+//Лямбда для значения (само число) ПЕРЕПИСАННАЯ
+double doubleValueFunc (double x) {return x;}
+
+// Лямбда для ключа (первая буква (char)) ?
+auto stringKeyFunc (const string& s) {
+    return s.empty() ? ' ' : s[0];  // если строка пустая, возвращается пробел
+    }
+
+// Лямбда для значения (длина строки (size_t)) ?
+    auto stringValueFunc = [](const string& s) {
+        return s.length();
+    };
+
+
+
+
 
 int main(){
     
@@ -128,13 +160,7 @@ int main(){
     }
     cout <<endl;
 
-    //Лямбда для ключа (последняя цифра)
-    auto intKeyFunc=[] (int x) {return x%10;};
-
-    //Лямбда для значения (само число)
-    auto intValueFunc=[] (int x) {return x;};
-
-    auto intGroups = groupStatus(intArr, intSize, intKeyFunc, intValueFunc);
+    auto intGroups = groupStatus<int, int, int>(intArr, intSize, intKeyFunc, intValueFunc);
     printGroups(intGroups);
 
     //Пример 2. Массив double
@@ -147,16 +173,7 @@ int main(){
     }
     cout <<endl;
 
-    ////Лямбда для ключа (интервал)
-    auto doubleKeyFunc = [](double x) {
-        if (x < 0) return 0;
-        else if (x <= 10) return 1;
-        else return 2;
-    };
-
-    //Лямбда для значения (само число)
-    auto doubleValueFunc = [](double x) {return x;};
-    auto doubleGroups = groupStatus(doubleArr, doubleSize, doubleKeyFunc, doubleValueFunc);
+    auto doubleGroups = groupStatus<double, int, double>(doubleArr, doubleSize, doubleKeyFunc, doubleValueFunc);
     printGroups(doubleGroups);
 
     //Пример 3. Массив string
@@ -169,17 +186,7 @@ int main(){
     }
     cout <<endl;
 
-    // Лямбда для ключа (первая буква (char))
-    auto stringKeyFunc = [](const string& s) {
-        return s.empty() ? ' ' : s[0];  // если строка пустая, возвращается пробел
-    };
-
-    // Лямбда для значения (длина строки (size_t))
-    auto stringValueFunc = [](const string& s) {
-        return s.length();
-    };
-
-    auto stringGroups = groupStatus(stringArr, stringSize, stringKeyFunc, stringValueFunc);
+    auto stringGroups = groupStatus<string, char, size_t>(stringArr, stringSize, stringKeyFunc, stringValueFunc);
     printGroups(stringGroups);
 
     return 0;

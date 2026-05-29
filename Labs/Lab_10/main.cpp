@@ -19,6 +19,11 @@ string removeLast(string s) {
 }
 string duplicate(string s) { return s + s; }
 
+//UPD: Функции-шаги для float
+float divideByPi (float x) {return x/3.14;}
+float multiplyBy67 (float x) {return x*67;}
+float add67 (float x) {return x+67;}
+
 
 int main(){
 
@@ -74,6 +79,42 @@ int main(){
     {
         std::cerr << e.what() << endl;
     }
+
+    
+    //UPD: Доп.задание Демонстрация MyPipeline<std:float>
+
+    cout<<"\n===  MyPipeline<float>  ==="<<endl;
+
+    try
+    {
+        MyPipeline<float> fltPipeline;
+        //добавить минимум 3 шага
+        fltPipeline.addStep ("Divide by Pi", divideByPi);
+        fltPipeline.addStep ("Multiply by 67", multiplyBy67);
+        fltPipeline.addStep ("Add 67", add67);
+
+        //вывести intPipeline через cout
+        cout<<fltPipeline<<endl;
+
+        //вывести результат run для одного входного значения
+        float val= 10.27;
+        cout<<"Value: "<<val<<endl;
+        cout<<"Result: "<<fltPipeline.run(val)<<endl;
+
+        //вывести все элементы trace для того же входного значения
+        vector<float> trace_values=fltPipeline.trace(val);
+          cout<<"Trace: ";
+        for (int i = 0; i <trace_values.size(); i++) {
+            float val = trace_values[i];
+            cout << val << " ";
+        }
+        cout << endl;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
 
     //6.3. Демонстрация исключения
     cout<<"\n===  Exceptions  ==="<<endl;

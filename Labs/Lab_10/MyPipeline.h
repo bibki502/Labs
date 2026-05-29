@@ -86,8 +86,7 @@ template <class T> class MyPipeline{
         /*template <clas U> - т.к. operator<< это отдельная функция, 
         которая должна уметь работать с любым типом MyPipeLine;
         friend - даёт доступ operator<< к private полям;
-        ostream - класс «потока вывода»;
-        ostream& os - Output Stream*/
+        ostream - класс «потока вывода»; */
 };
 
 // 5. Вывод в поток. Перегрузить operator<<
